@@ -1,19 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { useFetch } from '../hooks/useFetch';
 
 export default function ProductList() {
-    const [products, setProducts] = useState([]);
     const [url, setUrl] = useState("http://localhost:5000/products");
+    const { data: products } = useFetch(url);
 
-    const fetchProducts = useCallback(async () => {
-        const response = await fetch(url);
-        const data = await response.json();
-        setProducts(data);
-    }, [url])
-
-    useEffect(() => {
-        fetchProducts();
-    }, [fetchProducts]);
-    
     return (
         <section>
             <div className='filter'>
@@ -21,7 +12,7 @@ export default function ProductList() {
                 <button onClick={() => setUrl("http://localhost:5000/products?in_stock=1")}>In Stock Only</button>
             </div>
             {
-                products.map((product) => (
+                products && products.map((product) => (
                     <div className='card' key={product.id}>
                         <p className='id'>{product.id}</p>
                         <p className='name'>{product.name}</p>
